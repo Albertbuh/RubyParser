@@ -18,7 +18,7 @@ namespace RubyParser.inter
             lexline = Lexer.line;
         }
 
-        protected void Error(String s)
+        protected internal void Error(String s)
         {
             throw new Exception("near line" + lexline + ": " + s);
         }
