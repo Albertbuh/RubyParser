@@ -20,7 +20,7 @@ namespace RubyParser.inter
 
         protected internal void Error(String s)
         {
-            throw new Exception("near line" + lexline + ": " + s);
+            throw new Exception("near line " + lexline + ": " + s);
         }
         
 

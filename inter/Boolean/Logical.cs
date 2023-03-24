@@ -20,7 +20,7 @@ namespace RubyParser.inter.Boolean
                 Error("type error");
         }
 
-        public LType? Check(LType? t1, LType? t2)
+        public virtual LType? Check(LType? t1, LType? t2)
         {
             if (t1 == LType.Bool && t2 == LType.Bool)
                 return LType.Bool;

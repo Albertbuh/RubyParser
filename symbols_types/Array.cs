@@ -19,7 +19,7 @@ namespace RubyParser.symbols_types
         }
         public override string ToString()
         {
-            return "[" + Size + "] " + TypeOf.ToString();
+            return "[" + Size + "] " + TypeOf?.ToString();
         }
 
     }

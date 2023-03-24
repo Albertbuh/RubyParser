@@ -29,7 +29,7 @@ namespace RubyParser.lexer
             Reserve(new Word("if", Tag.IF));
             Reserve(new Word("else", Tag.ELSE));
             Reserve(new Word("while", Tag.WHILE));
-            Reserve(new Word("do", Tag.DO));
+            Reserve(new Word("do", Tag.DOWHILE));
             Reserve(new Word("break", Tag.BREAK));
             Reserve(Word.True);
             Reserve(Word.False);
@@ -43,7 +43,7 @@ namespace RubyParser.lexer
         /// <summary>
         /// Method read new input symbol and put it in "peek"
         /// </summary>
-        private void readch()
+        private void Readch()
         {
             try
             {
@@ -59,22 +59,23 @@ namespace RubyParser.lexer
         /// <summary>
         /// needed to find composed tokens
         /// </summary>
-        private bool readch(char c)
+        private bool Readch(char c)
         {
-            readch();
+            Readch();
             if (peek != c)
                 return false;
             peek = ' ';
             return true;
         }
 
-        public Token scan()
+        public Token Scan()
         {
             //skip space and tabs
-            for(; ; readch())
+            for(; ; Readch())
             {
-                if (peek == ' ' || peek == '\t') continue;
-                else if (peek == '\n') line++;
+                if (peek == ' ' || peek == '\t' || peek == '\r') continue;
+                else if (peek == '\n') 
+                    line++;
                 else break;
             }
 
@@ -82,36 +83,36 @@ namespace RubyParser.lexer
             switch(peek)
             {
                 case '&':
-                    if (readch('&'))
+                    if (Readch('&'))
                         return Word.and;
                     else
                         return new Token('&');
 
                 case '|':
-                    if (readch('|'))
+                    if (Readch('|'))
                         return Word.or;
                     else
                         return new Token('|');
 
                 case '=':
-                    if (readch('='))
+                    if (Readch('='))
                         return Word.equal;
                     else
                         return new Token('=');
                 case '!':
-                    if (readch('='))
+                    if (Readch('='))
                         return Word.not_equal;
                     else
                         return new Token('!');
 
                 case '<':
-                    if (readch('='))
+                    if (Readch('='))
                         return Word.lower_equal;
                     else
                         return new Token('<');
 
                 case '>':
-                    if (readch('='))
+                    if (Readch('='))
                         return Word.great_equal;
                     else
                         return new Token('>');
@@ -126,8 +127,8 @@ namespace RubyParser.lexer
                 int val = 0;
                 do
                 {
-                    val = 10 * val + Convert.ToByte(peek);
-                    readch();
+                    val = 10 * val + (byte)Char.GetNumericValue(peek);//Convert.ToByte(peek);
+                    Readch();
                 } while(Char.IsDigit(peek));
                 if (peek != '.')
                     return new Num(val);
@@ -136,7 +137,7 @@ namespace RubyParser.lexer
                 const float const_10 = 10;
                 for(; ;)
                 {
-                    readch();
+                    Readch();
                     if (!Char.IsNumber(peek))
                         break;
                     fl_val = fl_val + Convert.ToByte(peek) / const_10;
@@ -151,7 +152,7 @@ namespace RubyParser.lexer
                 do
                 {
                     stringBuilder.Append(peek);
-                    readch();
+                    Readch();
                 } while (Char.IsLetterOrDigit(peek));
 
                 string terminal = stringBuilder.ToString();

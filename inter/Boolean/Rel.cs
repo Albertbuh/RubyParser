@@ -15,7 +15,7 @@ namespace RubyParser.inter.Boolean
     {
         public Rel(Token op, Expr ex1, Expr ex2) : base(op , ex1, ex2) { }
 
-        public LType? check(LType? t1, LType? t2)
+        public override LType? Check(LType? t1, LType? t2)
         {
             if (t1 is symbols_types.Array || t2 is symbols_types.Array)
                 return null;

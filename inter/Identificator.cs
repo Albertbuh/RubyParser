@@ -13,7 +13,7 @@ namespace RubyParser.inter
     /// </summary>
     public class Identificator : Expr
     {
-        public int Offset; //address offset
+        public int Offset; //address offset        
         public Identificator(Word id, LType type, int offset) : base(id, type)
         {
             Offset = offset;
