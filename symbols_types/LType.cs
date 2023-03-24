@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RubyParser.symbols
+namespace RubyParser.symbols_types
 {
     public class LType : Word
     {
@@ -22,7 +22,7 @@ namespace RubyParser.symbols
             Char = new LType("char", Tag.BASIC, 1),
             Bool = new LType("bool", Tag.BASIC, 1);
 
-        public static Boolean IsNumeric(LType p)
+        public static Boolean IsNumeric(LType? p)
         {
             if (p == LType.Char || p == LType.Int || p == LType.Float)
                 return true;
@@ -31,7 +31,7 @@ namespace RubyParser.symbols
         }
 
         //Method for types convertation 
-        public static LType? Max(LType p1, LType p2)
+        public static LType? Max(LType? p1, LType? p2)
         {
             if (!IsNumeric(p1) || !IsNumeric(p2))
                 return null;

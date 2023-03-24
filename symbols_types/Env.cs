@@ -4,28 +4,29 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using RubyParser.inter;
 
-namespace RubyParser.symbols
+namespace RubyParser.symbols_types
 {
     /// <summary>
     /// Work with symbol tables (helpful when program has several namespaces or nesting blocks 
     /// </summary>
     public class Env
     {
-        private Dictionary<Token, Id> table;
+        private Dictionary<Token, Identificator> table;
         protected Env prev;
         public Env(Env p)
         {
-            table = new Dictionary<Token, Id>();
+            table = new Dictionary<Token, Identificator>();
             prev = p;
         }
 
-        public void Put(Token token, Id id)
+        public void Put(Token token, Identificator id)
         {
             table.Add(token, id);
         }
 
-        public Id? Get(Token token)
+        public Identificator? Get(Token token)
         {
             for(Env e = this; e != null; e = e.prev)
             {
