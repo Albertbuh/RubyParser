@@ -4,14 +4,22 @@ b = 20.3
 c = 15
 a = a + 30
 
-if(a < b)
-	sum = a + 10
-	sum = 20
+if(a<b)
+	a = b
+ 	b = c
+else 
+	if(a==b)
+		b = c
+		c = a
+	else
+		c = a
+		a = b
+	end
 end
-else
-	sum = b + 10
-	aboba = 400
-	lambda = 300
+
+if (a==b)
+	a = a*100
+ 	b = 200
 end
 
 while( a<b) do

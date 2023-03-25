@@ -78,7 +78,10 @@ namespace RubyParser
 
         private Stmt Stmts()
         {
-            if (look.tag == Tag.END)
+            if (look.tag == Tag.END 
+                || look.tag == Tag.ELSE) //Added to correct work with 'end' keyword,
+                                         //because fking ruby end full 'if'
+                                         //without dividing them to two blocks
                 return Stmt.Null;
             else
                 return new Sequence(pStmt(), Stmts());
@@ -94,6 +97,15 @@ namespace RubyParser
             top = savedEnv;
             return s;
         }
+        private Stmt BlockWithoutEnd()
+        {
+            Env savedEnv = top;
+            top = new Env(top);
+            Stmt s = Stmts();
+            top = savedEnv;
+            return s;
+        }
+
         private Stmt pStmt()
         {
             Expr x;
@@ -111,11 +123,16 @@ namespace RubyParser
                     x = pBool();
                     Match(')');
                     Match(Tag.OPERATOREND);
-                    s1 = BlockWithEnd();
+                    s1 = BlockWithoutEnd();
                     if (look.tag != Tag.ELSE)
+                    {
+                        Match(Tag.END);
                         return new If(x, s1);
+                    }
+
                     Match(Tag.ELSE);
-                    Match(Tag.OPERATOREND);
+                    if(look.tag != Tag.IF)
+                        Match(Tag.OPERATOREND);
                     s2 = BlockWithEnd();
                     return new Else(x, s1, s2);
                 case Tag.WHILE:
