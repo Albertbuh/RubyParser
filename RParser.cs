@@ -76,12 +76,16 @@ namespace RubyParser
             return s;
         }
 
+        /// <summary>
+        /// <para> Tag.END need to check 'end' keyword</para>
+        /// <para> Tag.ELSE added to process construction 'if..else..end'</para>
+        /// </summary>
+        private bool IsEndOfBlock { 
+            get { return look.tag == Tag.END || look.tag == Tag.ELSE; } 
+        }
         private Stmt Stmts()
         {
-            if (look.tag == Tag.END 
-                || look.tag == Tag.ELSE) //Added to correct work with 'end' keyword,
-                                         //because fking ruby end full 'if'
-                                         //without dividing them to two blocks
+            if (IsEndOfBlock) 
                 return Stmt.Null;
             else
                 return new Sequence(pStmt(), Stmts());
@@ -126,6 +130,7 @@ namespace RubyParser
                     s1 = BlockWithoutEnd();
                     if (look.tag != Tag.ELSE)
                     {
+                        //construction if..end
                         Match(Tag.END);
                         return new If(x, s1);
                     }
@@ -149,6 +154,15 @@ namespace RubyParser
                     //pop bp
                     Stmt.Enclosing = savedStmt;
                     return whilenode;
+                case Tag.LOOP:
+                    Loop loopnode = new Loop();
+                    savedStmt = Stmt.Enclosing;
+                    Stmt.Enclosing = loopnode;
+                    Match(Tag.LOOP);
+                    s = pStmt();
+                    loopnode.Init(s);
+                    Stmt.Enclosing = savedStmt;
+                    return loopnode;
                 /*case Tag.DOWHILE:
                     DoWhile donode = new DoWhile();
                     savedStmt = Stmt.Enclosing;

@@ -18,6 +18,6 @@ namespace RubyParser.lexer
             IDENTIFICATOR = 1033, IF = 1034, INDEX = 1035, LOWEREQUAL = 1036,
             MINUS = 1037, NOTEQUAL = 1038, NUM = 1039, OR = 1040,
             REAL = 1041, TEMP = 1042, TRUE = 1043, WHILE = 1044, NOT=1045, BEGIN=1046, END=1047,
-            OPERATOREND = 1048, DOWHILE = 1049;
+            OPERATOREND = 1048, DOWHILE = 1049, LOOP=1050;
     }
 }

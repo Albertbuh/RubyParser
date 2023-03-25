@@ -5,7 +5,9 @@ c = 15
 a = a + 30
 
 if(a<b)
-	a = b
+	if(c==0)
+		a = b
+	end
  	b = c
 else 
 	if(a==b)
@@ -26,5 +28,13 @@ while( a<b) do
  a = a + 10
  a = b + 1000
 end	
+
+loop do
+ c = c * b + 100
+	if( c > 10000)
+		break
+	end
+end
+end
 end
 
