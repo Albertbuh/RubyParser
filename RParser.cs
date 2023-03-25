@@ -103,6 +103,7 @@ namespace RubyParser
                     if (look.tag != Tag.ELSE)
                         return new If(x, s1);
                     Match(Tag.ELSE);
+                    Match(Tag.OPERATOREND);
                     s2 = pStmt();
                     return new Else(x, s1, s2);
                 case Tag.WHILE:
@@ -114,12 +115,15 @@ namespace RubyParser
                     Match('(');
                     x = pBool();
                     Match(')');
+                    Match(Tag.DO);
+                    Match(Tag.OPERATOREND);
                     s1 = pStmt();
+                    Match(Tag.END);
                     whilenode.Init(x, s1);
                     //pop bp
                     Stmt.Enclosing = savedStmt;
                     return whilenode;
-                case Tag.DOWHILE:
+                /*case Tag.DOWHILE:
                     DoWhile donode = new DoWhile();
                     savedStmt = Stmt.Enclosing;
                     Stmt.Enclosing = donode;
@@ -132,7 +136,7 @@ namespace RubyParser
                     Match(Tag.OPERATOREND);
                     donode.Init(x, s1);
                     Stmt.Enclosing = savedStmt;
-                    return donode;
+                    return donode;*/
                 case Tag.BREAK:
                     Match(Tag.BREAK);
                     Match(Tag.OPERATOREND);
@@ -149,20 +153,29 @@ namespace RubyParser
             Stmt stmt;
             Token t = look;
             Match(Tag.IDENTIFICATOR);
-            if(look.tag == '=')
+            Identificator? identificator = top.Get(t);            
+            if (look.tag == '=')
             {
                 Move();
                 Expr ex = pBool(); //our right part of id = ...
-                LType type = ex.Type;
-                Identificator id = new Identificator((Word)t, type, used);
-                top.Put(t, id);
-                used += type.width;
-
-                stmt = new Set(id, ex);
+                if (identificator == null)
+                {
+                    LType type = ex.Type;
+                    Identificator new_id = new Identificator((Word)t, type, used);
+                    top.Put(t, new_id);
+                    used += type.width;
+                    stmt = new Set(new_id, ex);
+                }
+                else
+                {
+                    stmt = new Set(identificator, ex);
+                }
                 Match(Tag.OPERATOREND);
                 return stmt;
             }
-            throw new Exception("Error");
+            Error(" '=' expected (or you've tried to write Key word but make mistake ;0");
+            throw new InvalidOperationException(" '=' expected");
+            
         }
        
 

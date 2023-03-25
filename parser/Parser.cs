@@ -155,11 +155,11 @@ namespace RubyParser.parser
                     //pop bp
                     Stmt.Enclosing = savedStmt;
                     return whilenode;
-                case Tag.DOWHILE:
+                case Tag.DO:
                     DoWhile donode = new DoWhile();
                     savedStmt = Stmt.Enclosing;
                     Stmt.Enclosing = donode;
-                    Match(Tag.DOWHILE);
+                    Match(Tag.DO);
                     s1 = pStmt();
                     Match(Tag.WHILE);
                     Match('(');

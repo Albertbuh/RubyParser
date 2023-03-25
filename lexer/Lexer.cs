@@ -30,7 +30,8 @@ namespace RubyParser.lexer
             Reserve(new Word("if", Tag.IF));
             Reserve(new Word("else", Tag.ELSE));
             Reserve(new Word("while", Tag.WHILE));
-            Reserve(new Word("do", Tag.DOWHILE));
+            Reserve(new Word("do", Tag.DO));
+            //Reserve(new Word("do", Tag.DOWHILE)); //to langs, which use do while construction
             Reserve(new Word("break", Tag.BREAK));
             Reserve(new Word("and", Tag.AND));
             Reserve(new Word("or", Tag.OR));
@@ -87,6 +88,28 @@ namespace RubyParser.lexer
                 else break;
             }
 
+            //goto new line 
+            switch(peek)
+            {
+                case '\n':
+                    do
+                        line++;
+                    while (Readch('\n'));
+                    return new Token(Tag.OPERATOREND);
+                case ';':
+                    Readch();
+                    for (; ; Readch())
+                    {
+                        if (peek == ' ' || peek == '\t' || peek == '\r') continue;
+                        else if (peek == '\n')
+                            line++;
+                        else break;
+                    }
+                    return new Token(Tag.OPERATOREND);
+                default:
+                    break;
+            }
+
             //find composed tokens
             switch(peek)
             {
@@ -123,22 +146,7 @@ namespace RubyParser.lexer
                     if (Readch('='))
                         return Word.great_equal;
                     else
-                        return new Token('>');
-                case '\n':
-                    do
-                        line++;
-                    while (Readch('\n'));
-                    return new Token(Tag.OPERATOREND);
-                case ';':
-                    Readch();
-                    for (; ; Readch())
-                    {
-                        if (peek == ' ' || peek == '\t' || peek == '\r') continue;
-                        else if (peek == '\n')
-                            line++;
-                        else break;
-                    }
-                    return new Token(Tag.OPERATOREND);
+                        return new Token('>');               
                 default:
                     break;
             }

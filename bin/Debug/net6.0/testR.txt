@@ -1,16 +1,16 @@
 begin
-a = 10;
-b = 20.3;
-c = 15;
+a = 10
+b = 20.3
+c = 15
+a = a + 30
 
-begin
-sum = a + b + c;
-del = a / sum
-if(a>b)
-	uga = a / sum;
+if(a < b)
+	sum = a + 10
 else
-	ugb = b / sum;
-end
-po = a + b	
+	sum = b + 10
+
+while( a<b) do
+ a = a + 10
+end	
 end
 
