@@ -1,0 +1,9 @@
+a = 10
+b = 20.3
+c = 15
+sum = a + b + c
+
+while(j < 10) do
+puts j
+j = j + 1
+end

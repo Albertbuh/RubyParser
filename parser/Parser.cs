@@ -66,12 +66,12 @@ namespace RubyParser.parser
         private Stmt Block()
         {
             
-            Match('{');
+            Match(Tag.BEGIN);
             Env savedEnv = top;
             top = new Env(top);
             Decls();
             Stmt s = Stmts();
-            Match('}');
+            Match(Tag.END);
             top = savedEnv;
             return s;
         }
@@ -113,7 +113,7 @@ namespace RubyParser.parser
 
         private Stmt Stmts()
         {
-            if (look.tag == '}')
+            if (look.tag == Tag.END)
                 return Stmt.Null;
             else
                 return new Sequence(pStmt(), Stmts());
@@ -173,7 +173,7 @@ namespace RubyParser.parser
                     Match(Tag.BREAK);
                     Match(';');
                     return new Break();
-                case '{':
+                case Tag.BEGIN:
                     return Block();
                 default:
                     return Assign(); //assignment
@@ -191,6 +191,7 @@ namespace RubyParser.parser
             if(look.tag == '=')
             {
                 Move();
+               // Expr ex = pBool();
                 stmt = new Set(identificator, pBool());
             }
             else

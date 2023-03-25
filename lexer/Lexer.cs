@@ -34,6 +34,9 @@ namespace RubyParser.lexer
             Reserve(new Word("and", Tag.AND));
             Reserve(new Word("or", Tag.OR));
             Reserve(new Word("not", Tag.NOT));
+            Reserve(new Word("begin", Tag.BEGIN));
+            Reserve(new Word("end", Tag.END));
+
             Reserve(Word.True);
             Reserve(Word.False);
             //Reserve other objects
