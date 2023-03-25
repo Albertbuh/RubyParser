@@ -84,6 +84,16 @@ namespace RubyParser
                 return new Sequence(pStmt(), Stmts());
         }
 
+        private Stmt BlockWithEnd()
+        {
+            Env savedEnv = top;
+            top = new Env(top);
+            Stmt s = Stmts();
+            Match(Tag.END);
+            Match(Tag.OPERATOREND);
+            top = savedEnv;
+            return s;
+        }
         private Stmt pStmt()
         {
             Expr x;
@@ -101,12 +111,12 @@ namespace RubyParser
                     x = pBool();
                     Match(')');
                     Match(Tag.OPERATOREND);
-                    s1 = pStmt();
+                    s1 = BlockWithEnd();
                     if (look.tag != Tag.ELSE)
                         return new If(x, s1);
                     Match(Tag.ELSE);
                     Match(Tag.OPERATOREND);
-                    s2 = pStmt();
+                    s2 = BlockWithEnd();
                     return new Else(x, s1, s2);
                 case Tag.WHILE:
                     While whilenode = new While();
@@ -117,8 +127,6 @@ namespace RubyParser
                     Match('(');
                     x = pBool();
                     Match(')');
-                    //Match(Tag.DO);
-                   // Match(Tag.OPERATOREND);
                     s1 = pStmt();
                     whilenode.Init(x, s1);
                     //pop bp
