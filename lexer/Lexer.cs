@@ -14,7 +14,6 @@ namespace RubyParser.lexer
         public static int line = 1;
         private char peek = ' ';
         private Dictionary<string, Word> words = new Dictionary<string, Word>();
-
         private void Reserve(Word word)
         {
             words.Add(word.Lexeme, word);
@@ -38,6 +37,9 @@ namespace RubyParser.lexer
             Reserve(new Word("not", Tag.NOT));
             Reserve(new Word("begin", Tag.BEGIN));
             Reserve(new Word("end", Tag.END));
+
+            Reserve(new Word(";", Tag.OPERATOREND));
+            Reserve(new Word("\n", Tag.OPERATOREND));
 
             Reserve(Word.True);
             Reserve(Word.False);
@@ -81,9 +83,7 @@ namespace RubyParser.lexer
             //skip space and tabs
             for(; ; Readch())
             {
-                if (peek == ' ' || peek == '\t' || peek == '\r') continue;
-                else if (peek == '\n') 
-                    line++;
+                if (peek == ' ' || peek == '\t' || peek == '\r') continue;                
                 else break;
             }
 
@@ -124,7 +124,21 @@ namespace RubyParser.lexer
                         return Word.great_equal;
                     else
                         return new Token('>');
-
+                case '\n':
+                    do
+                        line++;
+                    while (Readch('\n'));
+                    return new Token(Tag.OPERATOREND);
+                case ';':
+                    Readch();
+                    for (; ; Readch())
+                    {
+                        if (peek == ' ' || peek == '\t' || peek == '\r') continue;
+                        else if (peek == '\n')
+                            line++;
+                        else break;
+                    }
+                    return new Token(Tag.OPERATOREND);
                 default:
                     break;
             }

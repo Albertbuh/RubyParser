@@ -19,10 +19,17 @@ namespace RubyParser.inter.Boolean
         {
             if (t1 is symbols_types.Array || t2 is symbols_types.Array)
                 return null;
-            else if (t1 == t2)
+            else if (IsNumeric(t1) && IsNumeric(t2))
                 return LType.Bool;
             else 
                 return null;
+        }
+        private bool IsNumeric(LType? p)
+        {
+            if (p == LType.Char || p == LType.Int || p == LType.Float)
+                return true;
+            else
+                return false;
         }
 
         public override void Jumping(int t, int f)

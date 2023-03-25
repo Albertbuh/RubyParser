@@ -90,7 +90,7 @@ namespace RubyParser
 
             switch (look.tag)
             {
-                case ';':
+                case Tag.OPERATOREND:
                     Move();
                     return Stmt.Null;
                 case Tag.IF:
@@ -98,6 +98,7 @@ namespace RubyParser
                     Match('(');
                     x = pBool();
                     Match(')');
+                    Match(Tag.OPERATOREND);
                     s1 = pStmt();
                     if (look.tag != Tag.ELSE)
                         return new If(x, s1);
@@ -128,13 +129,13 @@ namespace RubyParser
                     Match('(');
                     x = pBool();
                     Match(')');
-                    Match(';');
+                    Match(Tag.OPERATOREND);
                     donode.Init(x, s1);
                     Stmt.Enclosing = savedStmt;
                     return donode;
                 case Tag.BREAK:
                     Match(Tag.BREAK);
-                    Match(';');
+                    Match(Tag.OPERATOREND);
                     return new Break();
                 case Tag.BEGIN:
                     return Block();
@@ -158,7 +159,7 @@ namespace RubyParser
                 used += type.width;
 
                 stmt = new Set(id, ex);
-                Match(';');
+                Match(Tag.OPERATOREND);
                 return stmt;
             }
             throw new Exception("Error");

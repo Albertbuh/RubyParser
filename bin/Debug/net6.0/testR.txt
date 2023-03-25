@@ -2,6 +2,15 @@ begin
 a = 10;
 b = 20.3;
 c = 15;
+
+begin
 sum = a + b + c;
+del = a / sum
+if(a>b)
+	uga = a / sum;
+else
+	ugb = b / sum;
+end
+po = a + b	
 end
 
