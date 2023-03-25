@@ -4,16 +4,16 @@ using RubyParser.inter.Statements;
 using RubyParser.lexer;
 using RubyParser.symbols_types;
 
-namespace RubyParser.parser
+namespace RubyParser
 {
-    public class Parser
+    public class RParser
     {
         private Lexer lexer; //our lexer
         private Token look; //preview
         Env? top = null; //current symb table
         int used = 0; //memory for declare
 
-        public Parser(Lexer lex)
+        public RParser(Lexer lex)
         {
             lexer = lex;
             Move();
@@ -45,7 +45,6 @@ namespace RubyParser.parser
             Program();
         }
 
-
         /// <summary>
         /// Program -> Block
         /// </summary>
@@ -65,50 +64,14 @@ namespace RubyParser.parser
         /// <returns></returns>
         private Stmt Block()
         {
-            
+
             Match(Tag.BEGIN);
             Env savedEnv = top;
             top = new Env(top);
-            Decls();
             Stmt s = Stmts();
             Match(Tag.END);
             top = savedEnv;
             return s;
-        }
-
-        private void Decls()
-        {
-            while(look.tag == Tag.BASIC)
-            {
-                // Decl -> type Id;
-                LType type = PType();
-                Token token = look;
-                Match(Tag.IDENTIFICATOR);
-                Match(';');
-                Identificator id = new Identificator((Word)token, type, used);
-                top.Put(token, id);
-                used += type.width;
-            }
-        }
-        private LType PType()
-        {
-            LType type = (LType)look;
-            Match(Tag.BASIC);
-            if (look.tag != '[')
-                return type; // T -> basic
-            else
-                return Dims(type); //Array type
-        }
-
-        private LType Dims(LType type)
-        {
-            Match('[');
-            Token token = look;
-            Match(Tag.NUM);
-            Match(']');
-            if (look.tag == '[')
-                type = Dims(type);
-            return new symbols_types.Array(((Num)token).value, type);
         }
 
         private Stmt Stmts()
@@ -125,7 +88,7 @@ namespace RubyParser.parser
             Stmt s, s1, s2;
             Stmt savedStmt;
 
-            switch(look.tag)
+            switch (look.tag)
             {
                 case ';':
                     Move();
@@ -185,30 +148,27 @@ namespace RubyParser.parser
             Stmt stmt;
             Token t = look;
             Match(Tag.IDENTIFICATOR);
-            Identificator? identificator = top.Get(t);
-            if (identificator == null)
-                Error(t.ToString() + " undeclared");
             if(look.tag == '=')
             {
                 Move();
-                Expr ex = pBool();
-                stmt = new Set(identificator, ex);
-            }
-            else
-            {
-                Access x = Offset(identificator);
-                Match('=');
-                stmt = new SetElem(x, pBool());
-            }
-            Match(';');
-            return stmt;
+                Expr ex = pBool(); //our right part of id = ...
+                LType type = ex.Type;
+                Identificator id = new Identificator((Word)t, type, used);
+                top.Put(t, id);
+                used += type.width;
 
+                stmt = new Set(id, ex);
+                Match(';');
+                return stmt;
+            }
+            throw new Exception("Error");
         }
+       
 
         private Expr pBool()
         {
             Expr x = Join();
-            while(look.tag == Tag.OR)
+            while (look.tag == Tag.OR)
             {
                 Token token = look;
                 Move();
@@ -219,7 +179,7 @@ namespace RubyParser.parser
         private Expr Join()
         {
             Expr x = Equality();
-            while(look.tag == Tag.AND)
+            while (look.tag == Tag.AND)
             {
                 Token token = look;
                 Move();
@@ -230,7 +190,8 @@ namespace RubyParser.parser
         private Expr Equality()
         {
             Expr x = pRel();
-            while(look.tag == Tag.EQUAL || look.tag == Tag.NOTEQUAL) {
+            while (look.tag == Tag.EQUAL || look.tag == Tag.NOTEQUAL)
+            {
                 Token token = look;
                 Move();
                 x = new Rel(token, x, pRel());
@@ -255,7 +216,7 @@ namespace RubyParser.parser
         private Expr pExpr()
         {
             Expr x = pTerm();
-            while(look.tag == '+' || look.tag == '-')
+            while (look.tag == '+' || look.tag == '-')
             {
                 Token token = look;
                 Move();
@@ -266,7 +227,7 @@ namespace RubyParser.parser
         private Expr pTerm()
         {
             Expr x = pUnary();
-            while(look.tag == '*' || look.tag == '/')
+            while (look.tag == '*' || look.tag == '/')
             {
                 Token token = look;
                 Move();
@@ -276,7 +237,7 @@ namespace RubyParser.parser
         }
         private Expr pUnary()
         {
-            switch(look.tag)
+            switch (look.tag)
             {
                 case '-':
                     Move();
@@ -393,3 +354,4 @@ namespace RubyParser.parser
         }
     }
 }
+

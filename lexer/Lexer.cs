@@ -1,4 +1,6 @@
-﻿using RubyParser.symbols_types;
+﻿using RubyParser.inter;
+using RubyParser.lexer;
+using RubyParser.symbols_types;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -177,3 +179,4 @@ namespace RubyParser.lexer
         }
     }
 }
+
