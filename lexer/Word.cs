@@ -29,7 +29,7 @@ namespace RubyParser.lexer
         }
 
         public static readonly Word
-            and         = new Word("&&", Tag.AND),
+            and         = new Word("&&", Tag.AND),   //the word version like 'and' 'not' 'or' added in lexer constructor
             or          = new Word("||", Tag.OR),
             equal       = new Word("==", Tag.EQUAL),
             not_equal   = new Word("!=", Tag.NOTEQUAL),

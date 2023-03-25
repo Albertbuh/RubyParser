@@ -280,7 +280,7 @@ namespace RubyParser.parser
                 case '-':
                     Move();
                     return new Unary(Word.minus, pUnary());
-                case '!':
+                case '!' or Tag.NOT:
                     {
                         Token token = look;
                         Move();

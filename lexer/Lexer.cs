@@ -31,6 +31,9 @@ namespace RubyParser.lexer
             Reserve(new Word("while", Tag.WHILE));
             Reserve(new Word("do", Tag.DOWHILE));
             Reserve(new Word("break", Tag.BREAK));
+            Reserve(new Word("and", Tag.AND));
+            Reserve(new Word("or", Tag.OR));
+            Reserve(new Word("not", Tag.NOT));
             Reserve(Word.True);
             Reserve(Word.False);
             //Reserve other objects
