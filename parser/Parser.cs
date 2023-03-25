@@ -87,7 +87,7 @@ namespace RubyParser.parser
                 Match(';');
                 Identificator id = new Identificator((Word)token, type, used);
                 top.Put(token, id);
-                used = type.width;
+                used += type.width;
             }
         }
         private LType PType()
