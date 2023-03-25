@@ -29,7 +29,7 @@ namespace RubyParser.inter.Boolean
         {
             Expr a = Expr1.Reduce();
             Expr b = Expr2.Reduce();
-            String test = a.ToString() + " " + Operator.ToString() + b.ToString();
+            String test = a.ToString() + " " + Operator.ToString() +" "+ b.ToString();
             EmitJumps(test, t, f);
         }
     }

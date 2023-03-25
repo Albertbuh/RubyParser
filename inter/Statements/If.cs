@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace RubyParser.inter.Statements
 {
+    /// <summary>
+    /// Node for construction if (Expr) Stmt
+    /// </summary>
     public class If : Stmt
     {
         private Expr expr;

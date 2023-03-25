@@ -27,7 +27,7 @@ namespace RubyParser.inter.Boolean
         }
         public override void Jumping(int t, int f)
         {
-            EmitJumps(Reduce().ToString(), t, f);
+            EmitJumps(this.Reduce().ToString(), t, f);
         }
 
         public override string ToString()

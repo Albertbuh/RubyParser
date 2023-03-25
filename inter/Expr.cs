@@ -32,7 +32,7 @@ namespace RubyParser.inter
         /// <summary>
         /// Method which encapsulate expression to single address
         /// </summary>
-        /// <returns>Encapsed Expression</returns>
+        /// <returns>Encapsed Expression -> Constant, Identificator or Temporary variable</returns>
         public virtual Expr Reduce()
         { return this; }
 
@@ -50,13 +50,13 @@ namespace RubyParser.inter
         {
             if (t != 0 && f != 0)
             {
-                Emit("if " + test + " goto L" + t);
+                Emit("if (" + test + ") goto L" + t);
                 Emit("goto L" + f);
             }
             else if (t != 0)
-                Emit("if " + test + " goto L" + t);
+                Emit("ifTrue (" + test + ") goto L" + t);
             else if (f != 0)
-                Emit("else " + test + "goto L" + f);
+                Emit("ifFalse (" + test + ") goto L" + f);
         }
 
         /// <summary>

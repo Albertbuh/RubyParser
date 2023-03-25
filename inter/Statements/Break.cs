@@ -14,11 +14,11 @@ namespace RubyParser.inter.Statements
         {
             if (Enclosing == null)
                 Error("unenclosed break");
-            stmt = Enclosing;
+            stmt = Enclosing; //save Enclosing to understand where the end of construction
         }
         public override void Gen(int b, int a)
         {
-            Emit("goto L" + stmt?.after);
+            Emit("goto L" + stmt?.after); //goto command  after construction
         }
     }
 }

@@ -30,10 +30,14 @@ namespace RubyParser.inter
         {
             return ++lables;
         }
+
+        //print label
         public void EmitLabel(int i)
         {
             Console.Write("L" + i + ":");
         }
+
+        //print triaddress command
         public void Emit(String codeline)
         {
             Console.WriteLine("\t" + codeline);

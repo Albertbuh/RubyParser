@@ -3,12 +3,6 @@ using RubyParser.inter.Boolean;
 using RubyParser.inter.Statements;
 using RubyParser.lexer;
 using RubyParser.symbols_types;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RubyParser.parser
 {
@@ -25,6 +19,9 @@ namespace RubyParser.parser
             Move();
         }
 
+        /// <summary>
+        /// Set new lexeme to 'look'
+        /// </summary>
         private void Move()
         {
             look = lexer.Scan();
@@ -42,6 +39,12 @@ namespace RubyParser.parser
             else
                 Error("syntax error");
         }
+
+        public void Parse()
+        {
+            Program();
+        }
+
 
         /// <summary>
         /// Program -> Block
@@ -287,6 +290,12 @@ namespace RubyParser.parser
                     return Factor();
             }
         }
+
+        /// <summary>
+        /// Set different multipliers and constants
+        /// </summary>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
         private Expr Factor()
         {
             Expr? x = null;
@@ -339,10 +348,18 @@ namespace RubyParser.parser
 
             }
         }
+        /// <summary>
+        /// Need to find array addresses
+        /// <para> I -> [E] | [E] I</para>
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
+
         private Access Offset(Identificator id)
         {
             Expr i;
-            Expr w;
+            Expr w; //width
             Expr t1, t2;
             Expr loc;
             LType? type = id.Type;
@@ -358,11 +375,11 @@ namespace RubyParser.parser
                 while (look.tag == '[')
                 {
                     Match('[');
-                    i = pBool();
+                    i = pBool(); //index
                     Match(']');
                     w = new Constant(type.width);
-                    t1 = new Arithm(new Token('*'), i, w);
-                    t2 = new Arithm(new Token('+'), loc, t1);
+                    t1 = new Arithm(new Token('*'), i, w); //index*width
+                    t2 = new Arithm(new Token('+'), loc, t1); //location + elem
                     loc = t2;
                 }
                 return new Access(id, loc, type);

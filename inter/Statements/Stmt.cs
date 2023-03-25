@@ -16,7 +16,7 @@ namespace RubyParser.inter.Statements
         //empty sequence of instructions
         public static Stmt Null = new Stmt();
         /// <summary>
-        /// Generation of 
+        /// Generation of triaddress code
         /// </summary>
         /// <param name="a"> first command after code for this instruction</param>
         /// <param name="b"> start of code label</param>

@@ -27,7 +27,7 @@ namespace RubyParser.inter.Statements
             int label1 = NewLabel();
             //stmt2 label
             int label2 = NewLabel();
-            // if 'true' go to stmt1
+            // if 'true' go to stmt1 'false' to stmt2
             expr.Jumping(0, label2);
             EmitLabel(label1);
             stmt1.Gen(label1, a);

@@ -134,13 +134,12 @@ namespace RubyParser.lexer
                     return new Num(val);
 
                 float fl_val = val;
-                const float const_10 = 10;
-                for(; ;)
+                for(float divider = 10; ; divider*=10)
                 {
                     Readch();
                     if (!Char.IsNumber(peek))
                         break;
-                    fl_val = fl_val + Convert.ToByte(peek) / const_10;
+                    fl_val = fl_val + (byte)Char.GetNumericValue(peek) / divider;
                 }
                 return new Real(fl_val);
             }

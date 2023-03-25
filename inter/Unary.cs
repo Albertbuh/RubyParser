@@ -8,6 +8,10 @@ using System.Threading.Tasks;
 
 namespace RubyParser.inter
 {
+
+    /// <summary>
+    /// Arithm class for one-operand commands
+    /// </summary>
     public class Unary : Operation
     {
         public Expr Expr;

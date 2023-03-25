@@ -27,7 +27,7 @@ namespace RubyParser.inter.Statements
         public override void Gen(int b, int a)
         {
             after = a; //save a
-            int label = NewLabel();
+            int label = NewLabel(); //expr label
             stmt?.Gen(b, label);
             EmitLabel(label);
             expr?.Jumping(b, 0);

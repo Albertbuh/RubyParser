@@ -8,9 +8,13 @@ using System.Threading.Tasks;
 
 namespace RubyParser.inter.Boolean
 {
+
+    /// <summary>
+    /// general functionality for classes Or And Not and the like.
+    /// </summary>
     public class Logical : Expr
     {
-        public Expr Expr1, Expr2;
+        public Expr Expr1, Expr2; //logical operands
         protected Logical(Token op, Expr expr1, Expr expr2) : base(op, null)
         {
             Expr1 = expr1;
@@ -20,6 +24,7 @@ namespace RubyParser.inter.Boolean
                 Error("type error");
         }
 
+        //we need 2 operands of boolean type
         public virtual LType? Check(LType? t1, LType? t2)
         {
             if (t1 == LType.Bool && t2 == LType.Bool)
@@ -32,12 +37,13 @@ namespace RubyParser.inter.Boolean
             int f = NewLabel();
             int a = NewLabel();
             Temp temp = new Temp(Type);
-            Jumping(0, f); // 0 is special mark that means that no goto
-            Emit(temp.ToString() + " = true ");
-            Emit("goto L" + a);
-            EmitLabel(f);
-            Emit(temp.ToString() + " = false ");
-            EmitLabel(a);
+            Jumping(0, f); // that means that True exit is next command after this one
+                           // Fales exit is new label 'f'
+            Emit(temp.ToString() + " = true"); //temp = true
+            Emit("goto L" + a); //goto new label a
+            EmitLabel(f);       //Gen label 'f' ->
+            Emit(temp.ToString() + " = false "); // -> where temp is false
+            EmitLabel(a); //generate 'a' label
             return temp;
 
         }

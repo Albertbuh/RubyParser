@@ -5,6 +5,6 @@ using RubyParser.lexer;
 using RubyParser.parser;
 
 Lexer lex = new Lexer("test.txt");
-Parser parse = new Parser(lex);
-parse.Program();
+Parser parser = new Parser(lex);
+parser.Program();
 Console.WriteLine('\n');
