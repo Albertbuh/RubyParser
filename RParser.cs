@@ -3,6 +3,7 @@ using RubyParser.inter.Boolean;
 using RubyParser.inter.Statements;
 using RubyParser.lexer;
 using RubyParser.symbols_types;
+using System.Text;
 
 namespace RubyParser
 {
@@ -187,6 +188,32 @@ namespace RubyParser
                     Match(Tag.BREAK);
                     Match(Tag.OPERATOREND);
                     return new Break();
+                case Tag.PUTS:
+                    Match(Tag.PUTS);
+                    StringBuilder str = new StringBuilder();
+                    do
+                    {
+                        str.Append(look.ToString());
+                        Move();
+                    }
+                    while (look.tag != Tag.OPERATOREND);
+                    Match(Tag.OPERATOREND);
+                    return new Puts(str.ToString());
+                case Tag.CASE:
+                    Match(Tag.CASE);
+                    Expr caseX;
+                    caseX = pBool();
+                    Match(Tag.OPERATOREND);
+                    Case casenode = new Case(caseX);
+                    while (look.tag == Tag.WHEN)
+                    {
+                        Match(Tag.WHEN); // our When
+                        x = pBool();
+                        Match(Tag.OPERATOREND);
+                        s = pStmt();
+                        casenode.Add(new When(caseX, x, s));
+                    }
+                    return casenode;
                 case Tag.BEGIN:
                     return Block();
                 default:

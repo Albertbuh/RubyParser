@@ -38,7 +38,16 @@ end
 
 until ( c == 5 ) do
    c = c + 1;
-   c = c * c;
+   puts c = c + 2
+end
+
+case a
+when 10
+	puts "a"
+when 20
+	puts b
+when 30 
+	a = a + 30
 end
 end
 
