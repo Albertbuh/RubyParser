@@ -35,6 +35,10 @@ loop do
 		break
 	end
 end
+
+until ( c == 5 ) do
+   c = c + 1;
+   c = c * c;
 end
 end
 

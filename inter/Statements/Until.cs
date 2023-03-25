@@ -1,5 +1,4 @@
-﻿using RubyParser.symbols_types;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,31 +6,30 @@ using System.Threading.Tasks;
 
 namespace RubyParser.inter.Statements
 {
-    public class While : Stmt
+    public class Until : Stmt
     {
         private Expr? expr;
         private Stmt? stmt;
-        public While()
+
+        public Until()
         {
             expr = null;
             stmt = null;
         }
 
-        public void Init(Expr x, Stmt s)
+        public void Init(Expr ex, Stmt st)
         {
-            expr = x; stmt = s;
-            if (expr.Type != LType.Bool)
-                expr.Error("boolean required in while expression");
+            expr = ex;
+            stmt = st;
         }
 
         public override void Gen(int b, int a)
         {
-            after = a; //save a
-            //if 'false' jump to a
-            expr?.Jumping(0, a);
+            after = a;
             int label = NewLabel();
+            expr?.Jumping(a, 0);
             EmitLabel(label);
-            stmt?.Gen(label, b);
+            stmt?.Gen(b, label);
             Emit("goto L" + b);
         }
     }

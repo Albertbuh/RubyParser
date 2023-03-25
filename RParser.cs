@@ -91,6 +91,11 @@ namespace RubyParser
                 return new Sequence(pStmt(), Stmts());
         }
 
+
+        /// <summary>
+        /// used for constructions with only one front (with end) For example -> if..end
+        /// </summary>
+        /// <returns></returns>
         private Stmt BlockWithEnd()
         {
             Env savedEnv = top;
@@ -101,6 +106,10 @@ namespace RubyParser
             top = savedEnv;
             return s;
         }
+        /// <summary>
+        /// Used for constructinos without fronts. For example -> (if..else)..end (no 'end' before 'else')
+        /// </summary>
+        /// <returns></returns>
         private Stmt BlockWithoutEnd()
         {
             Env savedEnv = top;
@@ -154,6 +163,17 @@ namespace RubyParser
                     //pop bp
                     Stmt.Enclosing = savedStmt;
                     return whilenode;
+                case Tag.UNTIL:
+                    Until untilnode = new Until();
+                    savedStmt = Stmt.Enclosing;
+                    Stmt.Enclosing = untilnode;
+                    Match(Tag.UNTIL);
+                    Match('(');
+                    x = pBool();
+                    Match(')');
+                    s1 = pStmt();
+                    untilnode.Init(x, s1);
+                    return untilnode;
                 case Tag.LOOP:
                     Loop loopnode = new Loop();
                     savedStmt = Stmt.Enclosing;
@@ -163,20 +183,6 @@ namespace RubyParser
                     loopnode.Init(s);
                     Stmt.Enclosing = savedStmt;
                     return loopnode;
-                /*case Tag.DOWHILE:
-                    DoWhile donode = new DoWhile();
-                    savedStmt = Stmt.Enclosing;
-                    Stmt.Enclosing = donode;
-                    Match(Tag.DOWHILE);
-                    s1 = pStmt();
-                    Match(Tag.WHILE);
-                    Match('(');
-                    x = pBool();
-                    Match(')');
-                    Match(Tag.OPERATOREND);
-                    donode.Init(x, s1);
-                    Stmt.Enclosing = savedStmt;
-                    return donode;*/
                 case Tag.BREAK:
                     Match(Tag.BREAK);
                     Match(Tag.OPERATOREND);

@@ -32,8 +32,10 @@ namespace RubyParser.lexer
             Reserve(new Word("while", Tag.WHILE));
             Reserve(new Word("loop", Tag.LOOP));
             Reserve(new Word("do", Tag.BEGIN));
+            Reserve(new Word("until", Tag.UNTIL));
             //Reserve(new Word("do", Tag.DOWHILE)); //to langs, which use do while construction
             Reserve(new Word("break", Tag.BREAK));
+
             Reserve(new Word("and", Tag.AND));
             Reserve(new Word("or", Tag.OR));
             Reserve(new Word("not", Tag.NOT));
