@@ -30,7 +30,7 @@ namespace RubyParser.lexer
             Reserve(new Word("if", Tag.IF));
             Reserve(new Word("else", Tag.ELSE));
             Reserve(new Word("while", Tag.WHILE));
-            Reserve(new Word("do", Tag.DO));
+            Reserve(new Word("do", Tag.BEGIN));
             //Reserve(new Word("do", Tag.DOWHILE)); //to langs, which use do while construction
             Reserve(new Word("break", Tag.BREAK));
             Reserve(new Word("and", Tag.AND));

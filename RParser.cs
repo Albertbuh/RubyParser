@@ -66,10 +66,12 @@ namespace RubyParser
         {
 
             Match(Tag.BEGIN);
+            Match(Tag.OPERATOREND);
             Env savedEnv = top;
             top = new Env(top);
             Stmt s = Stmts();
             Match(Tag.END);
+            Match(Tag.OPERATOREND);
             top = savedEnv;
             return s;
         }
@@ -115,10 +117,9 @@ namespace RubyParser
                     Match('(');
                     x = pBool();
                     Match(')');
-                    Match(Tag.DO);
-                    Match(Tag.OPERATOREND);
+                    //Match(Tag.DO);
+                   // Match(Tag.OPERATOREND);
                     s1 = pStmt();
-                    Match(Tag.END);
                     whilenode.Init(x, s1);
                     //pop bp
                     Stmt.Enclosing = savedStmt;
