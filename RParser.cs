@@ -169,8 +169,22 @@ namespace RubyParser
                         s = Whens();
                         casenode.Add(s);
                     }
-                    Match(Tag.END);
+
+                    if(look.tag != Tag.ELSE)
+                    { 
+                        Match(Tag.END);
+                        Match(Tag.OPERATOREND);
+                        return casenode;
+                    }
+                    Match(Tag.ELSE);
                     Match(Tag.OPERATOREND);
+                    s = BlockWithEnd();
+                    try
+                    {
+                        Match(Tag.OPERATOREND);
+                    }
+                    catch { }
+                    casenode.els = s;
                     return casenode;
 
                 // if (pBool) stmt end

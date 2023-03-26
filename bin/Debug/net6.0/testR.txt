@@ -55,6 +55,9 @@ when 10
 	a = 100
 when 20
 	a = 100321
+		while (a < 1000) do
+			a = a + 100
+		end
 when 590
 	a = 100342
 when 30 
@@ -63,11 +66,11 @@ when 30
 			a = a + 100
 		end
 		puts a + b
-
+else
+	puts a
+	puts b
 end
 
 puts aboba
-
-
 end
 

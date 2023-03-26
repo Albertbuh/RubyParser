@@ -20,15 +20,13 @@ namespace RubyParser.inter.Statements
         }
         public override void Gen(int b, int a)
         {
-            
             if (stmt1 == Stmt.Null)
                 stmt2.Gen(b, a);
             else if (stmt2 == Stmt.Null)
                 stmt1.Gen(b, a);
             else
             {
-                if (stmt1 == Stmt.Null && stmt2 == Stmt.Null)
-                    Error("No statements in sequence");
+                
                 int label = NewLabel();
                 stmt1.Gen(b, label);
                 EmitLabel(label);
