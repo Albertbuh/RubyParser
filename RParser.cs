@@ -126,7 +126,8 @@ namespace RubyParser
             return s;
         }
 
-       
+        
+
         private Stmt pStmt()
         {
             Expr x;
@@ -138,14 +139,12 @@ namespace RubyParser
                 case Tag.OPERATOREND: // '\n' or ';'
                     Move();
                     return Stmt.Null;
-
-
                 // case -> case pExpr whens end
                 // case -> case pExpr whens else stmt end
                 case Tag.CASE:
                     Match(Tag.CASE);
                     x = pExpr();
-                    Match(Tag.OPERATOREND);
+                    Match(Tag.OPERATOREND);                    
                     //whens
                     s1 = BlockWithoutEnd();
                     if (look.tag != Tag.ELSE)
@@ -163,7 +162,7 @@ namespace RubyParser
                     Match(Tag.WHEN);
                     x = pExpr();
                     Match(Tag.OPERATOREND);
-                    s = pStmt();
+                    s = BlockWithEnd();
                     return new When(x, s);
 
                 // if (pBool) stmt end

@@ -53,10 +53,17 @@ puts sum * a / b
 case a
 when 10
 	a = 100
+end
 when 20
 	puts b
+end
 when 30 
 	a = a + 30
+	while (a < 1000) do
+		a = a + 100
+	end
+	puts a + b
+end
 else
 	c = c * b * 100
 	puts c * 10 * c
