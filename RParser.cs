@@ -65,7 +65,6 @@ namespace RubyParser
         /// <returns></returns>
         private Stmt Block()
         {
-
             Match(Tag.BEGIN);
             Match(Tag.OPERATOREND);
             Env savedEnv = top;
@@ -156,6 +155,8 @@ namespace RubyParser
                     Match(Tag.ELSE);
                     Match(Tag.OPERATOREND);
                     s2 = BlockWithEnd();
+
+                    Match(Tag.END);
                     return new Case(x, s1, s2);
                 //whens -> when pExpr stmt
                 case Tag.WHEN:
