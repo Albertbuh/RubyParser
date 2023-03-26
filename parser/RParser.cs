@@ -5,7 +5,7 @@ using RubyParser.lexer;
 using RubyParser.symbols_types;
 using System.Text;
 
-namespace RubyParser
+namespace RubyParser.parser
 {
     public class RParser
     {
@@ -80,9 +80,13 @@ namespace RubyParser
         /// <para> Tag.END need to check 'end' keyword</para>
         /// <para> Tag.ELSE added to process construction 'if..else..end'</para>
         /// </summary>
-        private bool IsEndOfBlock { 
-            get { return look.tag == Tag.END 
-                      || look.tag == Tag.ELSE; } 
+        private bool IsEndOfBlock
+        {
+            get
+            {
+                return look.tag == Tag.END
+                      || look.tag == Tag.ELSE;
+            }
         }
 
         /// <summary>
@@ -91,7 +95,7 @@ namespace RubyParser
         /// <returns></returns>
         private Stmt Stmts()
         {
-            if (IsEndOfBlock) 
+            if (IsEndOfBlock)
                 return Stmt.Null;
             else
                 return new Sequence(pStmt(), Stmts());
@@ -137,7 +141,7 @@ namespace RubyParser
         {
             Stmt s;
             Expr x;
-            if(look.tag == Tag.WHEN)
+            if (look.tag == Tag.WHEN)
             {
                 Move();
                 x = pExpr();
@@ -165,13 +169,13 @@ namespace RubyParser
                     Match(Tag.OPERATOREND);
                     Case casenode = new Case(x);
                     while (look.tag == Tag.WHEN)
-                    { 
+                    {
                         s = Whens();
                         casenode.Add(s);
                     }
 
-                    if(look.tag != Tag.ELSE)
-                    { 
+                    if (look.tag != Tag.ELSE)
+                    {
                         Match(Tag.END);
                         Match(Tag.OPERATOREND);
                         return casenode;
@@ -204,7 +208,7 @@ namespace RubyParser
                     }
 
                     Match(Tag.ELSE);
-                    if(look.tag != Tag.IF)
+                    if (look.tag != Tag.IF)
                         Match(Tag.OPERATOREND);
                     s2 = BlockWithEnd();
                     return new Else(x, s1, s2);
@@ -270,7 +274,7 @@ namespace RubyParser
             Stmt stmt;
             Token t = look;
             Match(Tag.IDENTIFICATOR);
-            Identificator? identificator = top.Get(t);            
+            Identificator? identificator = top.Get(t);
             if (look.tag == '=')
             {
                 Move();
@@ -292,9 +296,9 @@ namespace RubyParser
             }
             Error(" '=' expected (or you've tried to write Key word but make mistake ;0");
             throw new InvalidOperationException(" '=' expected");
-            
+
         }
-       
+
 
         private Expr pBool()
         {
@@ -417,7 +421,7 @@ namespace RubyParser
                     return x;
                 case Tag.IDENTIFICATOR:
                     {
-                        String s = look.ToString();
+                        string s = look.ToString();
                         Identificator? id = top.Get(look);
                         if (id is null)
                         {
