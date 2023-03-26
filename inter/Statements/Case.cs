@@ -10,28 +10,40 @@ namespace RubyParser.inter.Statements
     public class Case : Stmt
     {
         Expr expr;
-        Stmt whens;
+        List<Stmt> whens = new List<Stmt>();
         Stmt? els;
-        public Case(Expr ex, Stmt w, Stmt? el = null)
+        public Case(Expr ex, Stmt? el = null)
         {
             expr = ex;
-            whens = w;
             els = el;
         }
+        public void Add(Stmt when)
+        {
+            whens.Add(when);
+        }
+
+        
         public override void Gen(int b, int a)
         {
             Emit("CASE " + expr.ToString());
-            
-            if (els != null)
+
+            int[] labels = new int[whens.Count];
+            for (int i=0; i<labels.Length; i++)
             {
-                int label = NewLabel();
-                whens.Gen(b, label);
+                 labels[i] = NewLabel();
+            }
+            for (int i = 0; i < whens.Count; i++)
+            {
+                whens[i].Gen(0, labels[i]);
+            }
+
+            int label = 0;
+            if (els != null && label != 0)
+            {
                 EmitLabel(label);
                 Emit("ELSE NOT" + " goto L" + a);
                 els?.Gen(label, a);
             }
-            else
-                whens.Gen(b, a);
         }
     
     }

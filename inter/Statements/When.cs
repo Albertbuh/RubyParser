@@ -19,12 +19,12 @@ namespace RubyParser.inter.Statements
 
         public override void Gen(int b, int a)
         {
-            //label of instruction code
+            //b=0 => next command
+            //a => next 'when' label
+            EmitLabel(a++);
+            Emit("WHEN NOT " + expr.ToString() + " goto L" + a); //go to next 'when' label
             int label = NewLabel();
-            //if 'false' go to 'a', else goto next command
-            Emit("WHEN NOT " + expr.ToString() + " goto L" + a);
-            EmitLabel(label);
-            stmt.Gen(label, a);
+            stmt.Gen(0, label);
         }
     }
 }

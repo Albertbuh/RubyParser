@@ -125,8 +125,29 @@ namespace RubyParser
             return s;
         }
 
-        
 
+        private Stmt WhenStmts()
+        {
+            if (look.tag == Tag.WHEN || look.tag == Tag.ELSE || look.tag == Tag.END)
+                return Stmt.Null;
+            else
+                return new Sequence(pStmt(), WhenStmts());
+        }
+        private Stmt Whens()
+        {
+            Stmt s;
+            Expr x;
+            if(look.tag == Tag.WHEN)
+            {
+                Move();
+                x = pExpr();
+                Match(Tag.OPERATOREND);
+                s = WhenStmts();
+                return new When(x, s);
+            }
+            Error("Case error: 'when' undefiend");
+            throw new InvalidOperationException("Case error: no 'when' node");
+        }
         private Stmt pStmt()
         {
             Expr x;
@@ -138,33 +159,19 @@ namespace RubyParser
                 case Tag.OPERATOREND: // '\n' or ';'
                     Move();
                     return Stmt.Null;
-                // case -> case pExpr whens end
-                // case -> case pExpr whens else stmt end
                 case Tag.CASE:
                     Match(Tag.CASE);
                     x = pExpr();
-                    Match(Tag.OPERATOREND);                    
-                    //whens
-                    s1 = BlockWithoutEnd();
-                    if (look.tag != Tag.ELSE)
-                    {
-                        Match(Tag.END);
-                        return new Case(x, s1);
+                    Match(Tag.OPERATOREND);
+                    Case casenode = new Case(x);
+                    while (look.tag == Tag.WHEN)
+                    { 
+                        s = Whens();
+                        casenode.Add(s);
                     }
-                    //else node
-                    Match(Tag.ELSE);
-                    Match(Tag.OPERATOREND);
-                    s2 = BlockWithEnd();
-
                     Match(Tag.END);
-                    return new Case(x, s1, s2);
-                //whens -> when pExpr stmt
-                case Tag.WHEN:
-                    Match(Tag.WHEN);
-                    x = pExpr();
                     Match(Tag.OPERATOREND);
-                    s = BlockWithEnd();
-                    return new When(x, s);
+                    return casenode;
 
                 // if (pBool) stmt end
                 // if (PBool) stmt else stmt end
