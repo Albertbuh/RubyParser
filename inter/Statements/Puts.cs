@@ -8,23 +8,23 @@ namespace RubyParser.inter.Statements
 {
     public class Puts : Stmt
     {
-        Expr x;
+        Expr ex;
         String str;
         public Puts(Expr x)
         {
-            this.x = x;
+            this.ex = x;
             str = "";
         }
         public Puts(string str)
         {
             this.str = str;
-            this.x = null;
+            this.ex = null;
         }
 
         public override void Gen(int b, int a)
         {
-            if (x != null)
-                Emit("puts " + x.ToString());
+            if (ex != null)
+                Emit("puts " + ex.ToString());
             else
                 Emit("puts " + str);
         }

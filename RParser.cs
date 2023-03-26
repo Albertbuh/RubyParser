@@ -82,8 +82,14 @@ namespace RubyParser
         /// <para> Tag.ELSE added to process construction 'if..else..end'</para>
         /// </summary>
         private bool IsEndOfBlock { 
-            get { return look.tag == Tag.END || look.tag == Tag.ELSE; } 
+            get { return look.tag == Tag.END 
+                      || look.tag == Tag.ELSE; } 
         }
+
+        /// <summary>
+        /// Create sequences for Block of code
+        /// </summary>
+        /// <returns></returns>
         private Stmt Stmts()
         {
             if (IsEndOfBlock) 
@@ -120,6 +126,7 @@ namespace RubyParser
             return s;
         }
 
+       
         private Stmt pStmt()
         {
             Expr x;
@@ -128,9 +135,39 @@ namespace RubyParser
 
             switch (look.tag)
             {
-                case Tag.OPERATOREND:
+                case Tag.OPERATOREND: // '\n' or ';'
                     Move();
                     return Stmt.Null;
+
+
+                // case -> case pExpr whens end
+                // case -> case pExpr whens else stmt end
+                case Tag.CASE:
+                    Match(Tag.CASE);
+                    x = pExpr();
+                    Match(Tag.OPERATOREND);
+                    //whens
+                    s1 = BlockWithoutEnd();
+                    if (look.tag != Tag.ELSE)
+                    {
+                        Match(Tag.END);
+                        return new Case(x, s1);
+                    }
+                    //else node
+                    Match(Tag.ELSE);
+                    Match(Tag.OPERATOREND);
+                    s2 = BlockWithEnd();
+                    return new Case(x, s1, s2);
+                //whens -> when pExpr stmt
+                case Tag.WHEN:
+                    Match(Tag.WHEN);
+                    x = pExpr();
+                    Match(Tag.OPERATOREND);
+                    s = pStmt();
+                    return new When(x, s);
+
+                // if (pBool) stmt end
+                // if (PBool) stmt else stmt end
                 case Tag.IF:
                     Match(Tag.IF);
                     Match('(');
@@ -150,6 +187,7 @@ namespace RubyParser
                         Match(Tag.OPERATOREND);
                     s2 = BlockWithEnd();
                     return new Else(x, s1, s2);
+
                 case Tag.WHILE:
                     While whilenode = new While();
                     //push bp
@@ -199,21 +237,6 @@ namespace RubyParser
                     while (look.tag != Tag.OPERATOREND);
                     Match(Tag.OPERATOREND);
                     return new Puts(str.ToString());
-                case Tag.CASE:
-                    Match(Tag.CASE);
-                    Expr caseX;
-                    caseX = pBool();
-                    Match(Tag.OPERATOREND);
-                    Case casenode = new Case(caseX);
-                    while (look.tag == Tag.WHEN)
-                    {
-                        Match(Tag.WHEN); // our When
-                        x = pBool();
-                        Match(Tag.OPERATOREND);
-                        s = pStmt();
-                        casenode.Add(new When(caseX, x, s));
-                    }
-                    return casenode;
                 case Tag.BEGIN:
                     return Block();
                 default:

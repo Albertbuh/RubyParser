@@ -3,10 +3,10 @@ a = 10
 b = 20.3
 c = 15
 a = a + 30
-
+sum = a + b * c - 100 + a*b*c
 if(a<b)
 	if(c==0)
-		a = b
+		del = b
 	end
  	b = c
 else 
@@ -24,14 +24,20 @@ if (a==b)
  	b = 200
 end
 
-while( a<b) do
+while(a<b) do
+while(a<b) do
  a = a + 10
+ a = b + 1000
+end	
  a = b + 1000
 end	
 
 loop do
  c = c * b + 100
 	if( c > 10000)
+		break
+	end
+	if( c < 100)
 		break
 	end
 end
@@ -41,13 +47,22 @@ until ( c == 5 ) do
    puts c = c + 2
 end
 
+
+puts sum * a / b
+
 case a
 when 10
-	puts "a"
+	a = 100
 when 20
 	puts b
 when 30 
 	a = a + 30
+else
+	c = c * b * 100
+	puts c * 10 * c
 end
+
+puts sum * a / b
+
 end
 
