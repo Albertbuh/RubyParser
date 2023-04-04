@@ -33,6 +33,10 @@ namespace RubyParser.parser
             throw new Exception("Near line " + Lexer.line + " " + look + ": " + msg);
         }
 
+        /// <summary>
+        /// Set new lexeme to 'look' and give Exception if smthing bad in user code
+        /// </summary>
+        /// <param name="t"></param>
         private void Match(int t)
         {
             if (look.tag == t)
@@ -90,19 +94,6 @@ namespace RubyParser.parser
         }
 
         /// <summary>
-        /// Create sequences for Block of code
-        /// </summary>
-        /// <returns></returns>
-        private Stmt Stmts()
-        {
-            if (IsEndOfBlock)
-                return Stmt.Null;
-            else
-                return new Sequence(pStmt(), Stmts());
-        }
-
-
-        /// <summary>
         /// used for constructions with only one front (with end) For example -> if..end
         /// </summary>
         /// <returns></returns>
@@ -129,29 +120,19 @@ namespace RubyParser.parser
             return s;
         }
 
-
-        private Stmt WhenStmts()
+        /// <summary>
+        /// Create sequences for Block of code
+        /// </summary>
+        /// <returns></returns>
+        private Stmt Stmts()
         {
-            if (look.tag == Tag.WHEN || look.tag == Tag.ELSE || look.tag == Tag.END)
+            if (IsEndOfBlock)
                 return Stmt.Null;
             else
-                return new Sequence(pStmt(), WhenStmts());
+                return new Sequence(pStmt(), Stmts());
         }
-        private Stmt Whens()
-        {
-            Stmt s;
-            Expr x;
-            if (look.tag == Tag.WHEN)
-            {
-                Move();
-                x = pExpr();
-                Match(Tag.OPERATOREND);
-                s = WhenStmts();
-                return new When(x, s);
-            }
-            Error("Case error: 'when' undefiend");
-            throw new InvalidOperationException("Case error: no 'when' node");
-        }
+
+        
         private Stmt pStmt()
         {
             Expr x;
@@ -268,6 +249,45 @@ namespace RubyParser.parser
                     return Assign(); //assignment
             }
         }
+
+        /// <summary>
+        /// Create sequences for CASE Block of code 
+        /// </summary>
+        /// <returns></returns>
+        private Stmt WhenStmts()
+        {
+            //(special case) of EndOfBlock
+            if (look.tag == Tag.WHEN || look.tag == Tag.ELSE || look.tag == Tag.END)
+                return Stmt.Null;
+            else
+                return new Sequence(pStmt(), WhenStmts());
+        }
+        /// <summary>
+        /// Construct WHEN blocks of code for "case" construction
+        /// </summary>
+        /// <returns></returns>
+        /// <exception cref="InvalidOperationException"></exception>
+        private Stmt Whens()
+        {
+            Stmt s;
+            Expr x;
+            if (look.tag == Tag.WHEN)
+            {
+                Move();
+                x = pExpr();
+                Match(Tag.OPERATOREND);
+                s = WhenStmts();
+                return new When(x, s);
+            }
+            Error("Case error: 'when' undefiend");
+            throw new InvalidOperationException("Case error: no 'when' node");
+        }
+
+        /// <summary>
+        /// Assignment to variables (declaration included)
+        /// </summary>
+        /// <returns></returns>
+        /// <exception cref="InvalidOperationException"></exception>
 
         private Stmt Assign()
         {

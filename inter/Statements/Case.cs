@@ -29,6 +29,7 @@ namespace RubyParser.inter.Statements
             Emit("CASE " + expr.ToString());
 
             int nextlabel = NewLabel();
+            //start 'when' blocks from end of List  
             for (int i = whens.Count - 1; i > 0; i--)
             {
                 whens[i].Gen(0, nextlabel);
