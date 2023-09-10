@@ -91,7 +91,7 @@ namespace RubyParser.lexer
             //skip space and tabs
             for(; ; Readch())
             {
-                if (peek == ' ' || peek == '\t' || peek == '\r') continue;                
+                if (peek == ' ' || peek == '\t' || peek == '\r') continue;   
                 else break;
             }
 
